@@ -12,3 +12,39 @@
 - web app
 - react front end
 - python backend
+
+## Plan API
+
+The API will be a simple REST API for the start.
+
+objects:
+
+- game
+- figure
+
+### PUT /game
+
+- create game, creates all figures
+
+### GET /game/:id
+
+- get current state of game
+  - whose turn is it?
+  - check?
+  - checkmate?
+
+### GET /game/:id/figures
+
+- get all figures
+- figures know there current location
+
+### GET /figure/:id
+
+- get more detail about figure:
+  - location
+  - possible moves
+
+### PATCH /figure/:id
+
+- send target location when moving a figure
+- backend checks if move is valid
