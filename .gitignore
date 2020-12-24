@@ -1,0 +1,6 @@
+chessenv/
+.pytest_cache/
+dist/
+build/
+chessbackend.egg-info/
+__pycache__/
