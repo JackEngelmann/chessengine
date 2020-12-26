@@ -1,5 +1,6 @@
 import pytest
 from chessbackend.server import app
+from chessbackend import engine
 from flask import json
 
 
@@ -56,9 +57,33 @@ def test_get_figure_details(client):
   assert len(figure_details_data['valid-moves'][0]) == 2
 
 
+def test_update_figure_location(client):
+  game_builder = engine.GameBuilder()
+  game_builder.add_figure(engine.FigureType.KING, (3, 3), engine.Colour.WHITE)
+  game = game_builder.build()
+
+  for figure in game.figures:
+    app.figure_repository.add(figure)
+  
+  app.game_repository.add(game)
+
+  patch_response = client.patch(f'/game/{game.id}', json={
+    "from": {
+      "x": 3,
+      "y": 3,
+    },
+    "to": {
+      "x": 4,
+      "y": 4,
+    },
+  })
+  patch_response.status_code = 204
+
+
 @pytest.fixture
 def client():
   app.app.config["TESTING"] = True
   # TODO: app.app.app_context is pretty ugly.
   with app.app.test_client() as client:
     yield client
+  app.clear_repositories()

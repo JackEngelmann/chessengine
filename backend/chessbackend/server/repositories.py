@@ -49,6 +49,9 @@ class GameRepository:
                 )
         # TODO
         raise ValueError("Not found")
+    
+    def clear(self):
+        self._games = []
 
 class FigureRepository:
     def __init__(self):
@@ -95,3 +98,6 @@ class FigureRepository:
             if figure_data_model.game_id == game_id:
                 game_figures.append(self.get(figure_data_model.id))
         return tuple(game_figures)
+
+    def clear(self):
+        self._figures = []

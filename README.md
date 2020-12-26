@@ -44,7 +44,7 @@ objects:
   - location
   - possible moves
 
-### PATCH /game/:game_id/figure/:fugre_id
+### PATCH /game/:game_id/figure/:figure_id
 
 - send target location when moving a figure
 - backend checks if move is valid

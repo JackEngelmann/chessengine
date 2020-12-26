@@ -1,5 +1,5 @@
 from typing import Tuple
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, Response
 from chessbackend import engine
 from chessbackend.server import repositories
 
@@ -7,6 +7,11 @@ app = Flask(__name__)
 
 game_repository = repositories.GameRepository()
 figure_repository = repositories.FigureRepository()
+
+
+def clear_repositories():
+    game_repository.clear()
+    figure_repository.clear()
 
 
 @app.route('/game', methods=["PUT"])
@@ -60,3 +65,20 @@ def get_figure_details(game_id, figure_id):
         'colour': figure.colour.value,
         'valid-moves': tuple(valid_moves),
     })
+
+# TODO: should route be different?
+@app.route('/game/<int:game_id>', methods=["PATCH"])
+def make_move(game_id):
+    json = request.get_json()
+    from_position = (json['from']['x'], json['from']['y'])
+    to_position = (json['to']['x'], json['to']['y'])
+    game = game_repository.get(game_id)
+    game.figures = figure_repository.get_game_figures(game_id)
+
+    try:
+        game.make_move(from_position, to_position)
+        return jsonify({}), 204
+    except engine.NoFigureError:
+        return jsonify("No figure"), 409 # TODO: other status code? error message
+    except engine.InvalidMoveError:
+        return jsonify("Invalid move"), 409 # TODO: other status code? error message
