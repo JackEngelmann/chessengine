@@ -40,7 +40,23 @@ def get_figures(game_id):
             'position-x': fig.position[0],
             'position-y': fig.position[1],
             'colour': fig.colour.value,
+            'id': fig.id
         }
         for fig in figures
     )
     return jsonify(figures_data)
+
+@app.route('/game/<int:game_id>/figures/<int:figure_id>', methods=["GET"])
+def get_figure_details(game_id, figure_id):
+    figure = figure_repository.get(figure_id)
+    game = game_repository.get(game_id)
+    game_figures = figure_repository.get_game_figures(game_id)
+    game.figures = game_figures
+    valid_moves = game.get_all_valid_moves(figure)
+    return jsonify({
+        'id': figure.id,
+        'position-x': figure.position[0],
+        'position-y': figure.position[1],
+        'colour': figure.colour.value,
+        'valid-moves': tuple(valid_moves),
+    })
