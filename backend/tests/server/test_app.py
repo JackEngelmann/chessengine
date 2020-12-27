@@ -84,6 +84,9 @@ def test_update_figure_location(client):
   assert figures_data[0]['positionX'] == 3
   assert figures_data[0]['positionY'] == 4
 
+  game_response = client.get(f'/game/{game.id}')
+  game_data = json.loads(game_response.data)
+  assert game_data['inTurn'] == 'black'
 
 @pytest.fixture
 def client():

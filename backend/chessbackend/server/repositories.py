@@ -35,16 +35,15 @@ class GameRepository:
     def update(self, game: engine.Game):
         for game_data_model in self._games:
             if game_data_model.id == game.id:
-                game_data_model = self.get(game.id)
                 game_data_model.size = game.size
-                game_data_model.in_turn = game.in_turn
+                game_data_model.in_turn = game.in_turn.value
     
     def get(self, game_id: int) -> engine.Game:
         for game_data_model in self._games:
             if game_data_model.id == game_id:
                 return engine.Game(
                     game_data_model.size,
-                    game_data_model.in_turn,
+                    engine.Colour(game_data_model.in_turn),
                     game_data_model.id,
                 )
         # TODO
