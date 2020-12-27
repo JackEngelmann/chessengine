@@ -34,7 +34,7 @@ class GameRepository:
     
     def update(self, game: engine.Game):
         for game_data_model in self._games:
-            if game_data_model.id == game_id:
+            if game_data_model.id == game.id:
                 game_data_model = self.get(game.id)
                 game_data_model.size = game.size
                 game_data_model.in_turn = game.in_turn
@@ -70,7 +70,7 @@ class FigureRepository:
     
     def update(self, figure: engine.Figure):
         for figure_data_model in self._figures:
-            if figure_data_model.id == figure_id:
+            if figure_data_model.id == figure.id:
                 figure_data_model.colour = figure.colour
                 figure_data_model.position = figure.position
                 if figure.game:

@@ -1,0 +1,43 @@
+.chessboard__cell {
+  width: 2em;
+  height: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.chessboard__row {
+  display: flex;
+  flex-direction: row;
+}
+
+.chessboard__cell > span {
+  font-size: 2em;
+}
+
+.chessboard__cell--white {
+  background-color: rgb(236, 229, 229);
+}
+
+.chessboard__cell--black {
+  background-color: rgb(20, 20, 20);
+}
+
+.chessboard__cell--clickable {
+  cursor: pointer;
+}
+
+.chessboard__cell--selected {
+  background-color: rgb(122, 34, 34);
+}
+
+.chessboard__move-proposal {
+  position: absolute;
+  border-radius: 25%;
+  width: 50%;
+  left: 25%;
+  height: 50%;
+  top: 25%;
+  background-color: blue;
+}

@@ -4,3 +4,4 @@ dist/
 build/
 chessbackend.egg-info/
 __pycache__/
+.vscode/
