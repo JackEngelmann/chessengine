@@ -90,3 +90,20 @@ class TestGameIsCheck:
     assert not game.is_check()
 
 
+class TestGameIsCheckMate:
+  @staticmethod
+  def test_game_is_check_mate():
+    first_black_rook = figure_builder.build_rook(engine.Colour.BLACK, engine.Position(0, 7))
+    second_black_rook = figure_builder.build_rook(engine.Colour.BLACK, engine.Position(1, 7))
+    white_king = figure_builder.build_king(engine.Colour.WHITE, engine.Position(0, 0))
+    figures = (white_king, first_black_rook, second_black_rook)
+    game = engine.Game(figures, engine.Colour.WHITE)
+    assert game.is_check_mate()
+
+  @staticmethod
+  def test_game_is_check_but_not_check_mate():
+    black_rook = figure_builder.build_rook(engine.Colour.BLACK, engine.Position(0, 7))
+    white_king = figure_builder.build_king(engine.Colour.WHITE, engine.Position(0, 0))
+    figures = (white_king, black_rook)
+    game = engine.Game(figures, engine.Colour.WHITE)
+    assert not game.is_check_mate()

@@ -19,13 +19,17 @@ class Game:
     return _get_all_target_positions(source_position, self.figures, self.in_turn)
   
   def is_check(self) -> bool:
-    king = next(fig for fig in self.figures if fig.name == 'King' and fig.colour == self.in_turn)
-    opposite_color = _get_opposite_color(self.in_turn)
-    for figure in self.figures:
-      if king.position in _get_all_target_positions(figure.position, self.figures, opposite_color):
-        return True
-    return False
+    return _is_check(self.figures, self.in_turn)
   
+  def is_check_mate(self) -> bool:
+    if not self.is_check():
+      return False
+    for move in _get_all_possible_moves(self.figures, self.in_turn):
+      new_figures = _make_move(move, self.figures, self.in_turn)
+      if not _is_check(new_figures, self.in_turn):
+        return False
+    return True
+
 
 def _is_outside_board(position: engine.Position):
   return position.x < 0 or position.y < 0 or position.x > 7 or position.y > 7
@@ -63,6 +67,17 @@ def _get_all_target_positions(source_position: engine.Position, figures: Tuple[e
         all_target_positions.append(target_position)
   return tuple(all_target_positions)
 
+def _get_all_possible_moves(figures: Tuple[engine.Figure, ...], in_turn: engine.Colour) -> Tuple[engine.Move, ...]:
+  possible_moves = []
+  for figure in figures:
+    for target_position in _get_all_target_positions(figure.position, figures, in_turn):
+      move = engine.Move(
+        figure.position,
+        target_position,
+      )
+      possible_moves.append(move)
+  return possible_moves
+
 
 # TODO: move
 def _get_opposite_color(colour: engine.Colour):
@@ -70,3 +85,12 @@ def _get_opposite_color(colour: engine.Colour):
     return engine.Colour.BLACK
   else:
     return engine.Colour.WHITE
+
+
+def _is_check(figures: Tuple[engine.Figure, ...], in_turn: engine.Colour):
+  king = next(fig for fig in figures if fig.name == 'King' and fig.colour == in_turn)
+  opposite_color = _get_opposite_color(in_turn)
+  for figure in figures:
+    if king.position in _get_all_target_positions(figure.position, figures, opposite_color):
+      return True
+  return False

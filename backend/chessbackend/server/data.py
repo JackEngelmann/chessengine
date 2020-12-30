@@ -36,6 +36,16 @@ class FigureDataAdapter(engine.Figure):
         self.id = id
         self.game_id = game_id
 
+    def __copy__(self):
+        return FigureDataAdapter(
+            self.colour,
+            self.position,
+            self._movements,
+            self.name,
+            self.id,
+            self.game_id
+        )
+
 
 class FigureDataAdapterFactory(Type[engine.FigureFactory]):
     def __init__(self, game_id: str):
@@ -85,7 +95,8 @@ class FigureRepository:
         self._figures.append(figure)
     
     def update(self, figure: FigureDataAdapter):
-        pass
+        self.delete(figure.id)
+        self._figures.append(figure)
     
     def get(self, figure_id: int) -> FigureDataAdapter:
         for figure in self._figures:

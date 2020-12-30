@@ -22,9 +22,10 @@ class Movement(ABC):
 
   def execute_move(self, move: Move, figures: Tuple["Figure", ...]) -> Tuple["Figure", ...]:
     figure = get_figure_at_position(figures, move.source)
-    figure.position = move.target
+    new_figure = copy.copy(figure)
+    new_figure.position = move.target
     untouched_figures = tuple(fig for fig in figures if fig.position != move.source and fig.position != move.target)
-    return untouched_figures + (figure,)
+    return untouched_figures + (new_figure,)
   
 class PawnCaptureMovement(Movement):
   def is_move_possible(self, move: Move, figures: Tuple["Figure", ...]) -> bool:
