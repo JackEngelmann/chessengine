@@ -21,15 +21,15 @@ class Movement(ABC):
     pass
 
   def execute_move(self, move: Move, figures: Tuple["Figure", ...]) -> Tuple["Figure", ...]:
-    figure = _get_figure_at_position(figures, move.source)
+    figure = get_figure_at_position(figures, move.source)
     figure.position = move.target
     untouched_figures = tuple(fig for fig in figures if fig.position != move.source and fig.position != move.target)
     return untouched_figures + (figure,)
   
 class PawnCaptureMovement(Movement):
   def is_move_possible(self, move: Move, figures: Tuple["Figure", ...]) -> bool:
-    source_figure = _get_figure_at_position(figures, move.source)
-    target_figure = _get_figure_at_position(figures, move.target)
+    source_figure = get_figure_at_position(figures, move.source)
+    target_figure = get_figure_at_position(figures, move.target)
 
     # Must capture something.
     if not target_figure:
@@ -49,8 +49,8 @@ class PawnCaptureMovement(Movement):
 
 class PawnForwardMovement(Movement):
   def is_move_possible(self, move: Move, figures: Tuple["Figure", ...]) -> bool:
-    source_figure = _get_figure_at_position(figures, move.source)
-    target_figure = _get_figure_at_position(figures, move.target)
+    source_figure = get_figure_at_position(figures, move.source)
+    target_figure = get_figure_at_position(figures, move.target)
 
     # Cannot beat figure of same colour.
     if target_figure is not None:
@@ -66,12 +66,12 @@ class PawnForwardMovement(Movement):
     
     # White moves two field foward from start.
     if source_figure.colour == Colour.WHITE:
-      jump_over_field_is_free = _get_figure_at_position(figures, Position(move.source.x, 2)) is None
+      jump_over_field_is_free = get_figure_at_position(figures, Position(move.source.x, 2)) is None
       return move.source.y == 1 and move.target.y == 3 and jump_over_field_is_free
 
     # White moves two field foward from start.
     if source_figure.colour == Colour.BLACK:
-      jump_over_field_is_free = _get_figure_at_position(figures, Position(move.source.x, 5)) is None
+      jump_over_field_is_free = get_figure_at_position(figures, Position(move.source.x, 5)) is None
       return move.source.y == 6 and move.target.y == 4 and jump_over_field_is_free
 
     return False
@@ -79,8 +79,8 @@ class PawnForwardMovement(Movement):
 
 class LinearMovement(Movement):
   def is_move_possible(self, move: Move, figures: Tuple["Figure", ...]) -> bool:
-    source_figure = _get_figure_at_position(figures, move.source)
-    target_figure = _get_figure_at_position(figures, move.target)
+    source_figure = get_figure_at_position(figures, move.source)
+    target_figure = get_figure_at_position(figures, move.target)
 
     # Cannot beat figure of same colour.
     if target_figure and target_figure.colour == source_figure.colour:
@@ -91,7 +91,7 @@ class LinearMovement(Movement):
     if vertical_move:
       y_values = (move.source.y, move.target.y)
       for y in range(min(y_values) + 1, max(y_values)):
-        if _get_figure_at_position(figures, Position(move.source.x, y)) is not None:
+        if get_figure_at_position(figures, Position(move.source.x, y)) is not None:
           return False
       return True
 
@@ -100,7 +100,7 @@ class LinearMovement(Movement):
     if horizontal_move:
       x_values = (move.source.x, move.target.x)
       for x in range(min(x_values) + 1, max(x_values)):
-        if _get_figure_at_position(figures, Position(x, move.source.y)) is not None:
+        if get_figure_at_position(figures, Position(x, move.source.y)) is not None:
           return False
       return True
 
@@ -109,8 +109,8 @@ class LinearMovement(Movement):
 
 class KingRegularMovement(Movement):
   def is_move_possible(self, move: Move, figures: Tuple["Figure", ...]) -> bool:
-    source_figure = _get_figure_at_position(figures, move.source)
-    target_figure = _get_figure_at_position(figures, move.target)
+    source_figure = get_figure_at_position(figures, move.source)
+    target_figure = get_figure_at_position(figures, move.target)
 
     # Cannot beat figure of same colour.
     if target_figure and target_figure.colour == source_figure.colour:
@@ -124,8 +124,8 @@ class KingRegularMovement(Movement):
 
 class DiagonalMovement(Movement):
   def is_move_possible(self, move: Move, figures: Tuple["Figure", ...]) -> bool:
-    source_figure = _get_figure_at_position(figures, move.source)
-    target_figure = _get_figure_at_position(figures, move.target)
+    source_figure = get_figure_at_position(figures, move.source)
+    target_figure = get_figure_at_position(figures, move.target)
 
     # Cannot beat figure of same colour.
     if target_figure and target_figure.colour == source_figure.colour:
@@ -146,15 +146,15 @@ class DiagonalMovement(Movement):
     x_range = _get_exclusive_range(move.source.x, move.target.x)
     y_range = _get_exclusive_range(move.source.y, move.target.y)
     for (x, y) in zip(x_range, y_range):
-      if _get_figure_at_position(figures, Position(x, y)) is not None:
+      if get_figure_at_position(figures, Position(x, y)) is not None:
         return False
     return True
 
 
 class KnightMovement(Movement):
   def is_move_possible(self, move: Move, figures: Tuple["Figure", ...]) -> bool:
-    source_figure = _get_figure_at_position(figures, move.source)
-    target_figure = _get_figure_at_position(figures, move.target)
+    source_figure = get_figure_at_position(figures, move.source)
+    target_figure = get_figure_at_position(figures, move.target)
 
     # Cannot beat figure of same colour.
     if target_figure and target_figure.colour == source_figure.colour:
@@ -245,7 +245,7 @@ class FigureBuilder:
     return self.figure_factory.create(colour, position, movements, "Pawn")
 
 
-def _get_figure_at_position(figures: Tuple[Figure, ...], position: Position) -> Optional[Figure]:
+def get_figure_at_position(figures: Tuple[Figure, ...], position: Position) -> Optional[Figure]:
   for figure in figures:
     if figure.position == position:
       return figure
@@ -284,50 +284,6 @@ def build_default_figures(figure_builder: FigureBuilder) -> Tuple[Figure, ...]:
       figure_builder.build_pawn(Colour.WHITE, Position(x, 1))
     )
   return tuple(figures)
-
-class Game:
-  def __init__(self, figures: Tuple[Figure, ...], in_turn = Colour.WHITE):
-    self.in_turn = in_turn
-    self.figures = figures
-  
-  def is_move_possible(self, move: Move) -> bool:
-    figure_to_move = _get_figure_at_position(self.figures, move.source)
-
-    if figure_to_move is None:
-      return False
-
-    valid_figure_move = figure_to_move.is_move_possible(move, self.figures)
-    outside_of_board = _is_outside_board(move.target)
-    right_colour = figure_to_move.colour == self.in_turn
-    return right_colour and valid_figure_move and not outside_of_board
-
-  def make_move(self, move: Move):
-    if not self.is_move_possible(move):
-      raise ValueError("Invalid move")
-    figure_to_move = _get_figure_at_position(self.figures, move.source)
-    self.figures = figure_to_move.execute_move(move, self.figures)
-    self._toggle_in_turn()
-  
-  def get_all_target_positions(self, source_position: Position) -> Tuple[Position, ...]:
-    size_x = 8 # TODO: constants
-    size_y = 8
-    all_target_positions = []
-    for x in range(size_x):
-      for y in range(size_y):
-        target_position = Position(x, y)
-        if self.is_move_possible(Move(source_position, target_position)):
-          all_target_positions.append(target_position)
-    return tuple(all_target_positions)
-  
-  def _toggle_in_turn(self):
-    if self.in_turn == Colour.WHITE:
-      self.in_turn = Colour.BLACK
-    else:
-      self.in_turn = Colour.WHITE
-
-
-def _is_outside_board(position: Position):
-  return position.x < 0 or position.y < 0 or position.x > 7 or position.y > 7
 
 
 def _get_exclusive_range(start: int, end: int):
