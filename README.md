@@ -7,44 +7,7 @@
   - reinforcement learning model
   - min-max algorithm
 
-## Idea Technical Approach
+## Get Started
 
-- web app
-- react front end
-- python backend
-
-## Plan API
-
-The API will be a simple REST API for the start.
-
-objects:
-
-- game
-- figure
-
-### PUT /game
-
-- create game, creates all figures
-
-### GET /game/:id
-
-- get current state of game
-  - whose turn is it?
-  - check?
-  - checkmate?
-
-### GET /game/:id/figures
-
-- get all figures
-- figures know there current location
-
-### GET /game/:game_id/figure/:figure_id
-
-- get more detail about figure:
-  - location
-  - possible moves
-
-### PATCH /game/:game_id/figure/:figure_id
-
-- send target location when moving a figure
-- backend checks if move is valid
+Run frontend: `yarn start`
+Run backend: `export FLASK_APP=*path-to-app.py* && flask run`
