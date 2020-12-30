@@ -38,9 +38,13 @@ def create_game():
 @app.route('/game/<game_id>', methods=["GET"])
 def get_game(game_id):
     game = game_repository.get(game_id)
+    game_figures = figure_repository.get_game_figures(game_id)
+    game.figures = game_figures
     return jsonify({
         "id": game.id,
         "inTurn": game.in_turn.value,
+        "check": game.is_check(),
+        "checkMate": game.is_check_mate(),
     })
 
 

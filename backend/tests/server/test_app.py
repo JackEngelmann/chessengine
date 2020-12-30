@@ -19,6 +19,8 @@ def test_get_game(client):
   get_response = client.get(f'/game/{game_id}')
   get_data = json.loads(get_response.data)
   assert get_data['inTurn'] == 'white'
+  assert isinstance(get_data['check'], bool)
+  assert isinstance(get_data['checkMate'], bool)
 
 
 def test_get_game_figures(client):
@@ -62,39 +64,31 @@ def test_get_figure_details(client):
 
 
 def test_update_figure_location(client):
-  # TODO: refactor this test. It shouldn't use data module directly.
-  game_factory = data.GameDataAdapterFactory()
-  game = game_factory.create()
+  create_response = client.post('/game')
+  create_data = json.loads(create_response.data)
 
-  figure_factory = data.FigureDataAdapterFactory(game.id)
-  figure_builder = engine.FigureBuilder(figure_factory)
-  king = figure_builder.build_king(engine.Colour.WHITE, engine.Position(3, 3))
-  game.figures = (king,)
-
-  app.game_repository.add(game)
-
-  for figure in game.figures:
-    app.figure_repository.add(figure)
+  game_id = create_data['id']
   
-  patch_response = client.patch(f'/game/{game.id}', json={
+  # Move white pawn one step forward.
+  patch_response = client.patch(f'/game/{game_id}', json={
     "from": {
-      "x": 3,
-      "y": 3,
+      "x": 0,
+      "y": 1,
     },
     "to": {
-      "x": 3,
-      "y": 4,
+      "x": 0,
+      "y": 2,
     },
   })
   assert patch_response.status_code == 204
 
-  figures_response = client.get(f'/game/{game.id}/figures')
+  figures_response = client.get(f'/game/{game_id}/figures')
   figures_data = json.loads(figures_response.data)
-  assert len(figures_data) == 1
-  assert figures_data[0]['positionX'] == 3
-  assert figures_data[0]['positionY'] == 4
+  assert len(figures_data) == 32
+  moved_figure = next(fig for fig in figures_data if fig['positionX'] == 0 and fig['positionY'] == 2) is not None
+  assert moved_figure is not None
 
-  game_response = client.get(f'/game/{game.id}')
+  game_response = client.get(f'/game/{game_id}')
   game_data = json.loads(game_response.data)
   assert game_data['inTurn'] == 'black'
 
