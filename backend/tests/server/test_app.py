@@ -1,5 +1,5 @@
 import pytest
-from chessbackend.server import app
+from chessbackend.server import app, data
 from chessbackend import engine
 from flask import json
 
@@ -7,7 +7,7 @@ from flask import json
 def test_create_game(client):
   response = client.post('/game')
   data = json.loads(response.data)
-  assert data['id'] == 0
+  assert data['id'] is not None
 
 
 def test_get_game(client):
@@ -31,7 +31,7 @@ def test_get_game_figures(client):
   figures_data = json.loads(figures_response.data)
   assert len(figures_data) > 0
   for figure in figures_data:
-    assert isinstance(figure['id'], int)
+    assert isinstance(figure['id'], str)
     assert isinstance(figure['positionX'], int)
     assert isinstance(figure['positionY'], int)
     assert figure['colour'] == "white" or figure['colour'] == "black"
@@ -45,22 +45,32 @@ def test_get_figure_details(client):
   figures_response = client.get(f'/game/{game_id}/figures')
   figures_data = json.loads(figures_response.data)
 
-  figure_id = figures_data[0]['id']
+  # Pick a pawn, because all pawns should have some valid moves.
+  figure_id = None
+  for figure in figures_data:
+    if figure['name'] == 'Pawn':
+      figure_id = figure['id']
 
   figure_details_response = client.get(f'/game/{game_id}/figures/{figure_id}')
   figure_details_data = json.loads(figure_details_response.data)
-  assert isinstance(figure_details_data['id'], int)
+  assert isinstance(figure_details_data['id'], str)
   assert isinstance(figure_details_data['positionX'], int)
   assert isinstance(figure_details_data['positionY'], int)
-  assert figure_details_data['colour'] == "white" or figure['colour'] == "black"
+  assert figure_details_data['colour'] == "white" or figure_details_data['colour'] == "black"
   assert len(figure_details_data['validMoves']) > 0
   assert len(figure_details_data['validMoves'][0]) == 2
 
 
 def test_update_figure_location(client):
-  game_builder = engine.GameBuilder()
-  game_builder.add_figure(engine.FigureType.KING, (3, 3), engine.Colour.WHITE)
-  game = game_builder.build()
+  # TODO: refactor this test. It shouldn't use data module directly.
+  game_factory = data.GameDataAdapterFactory()
+  game = game_factory.create()
+
+  figure_factory = data.FigureDataAdapterFactory(game.id)
+  figure_builder = engine.FigureBuilder(figure_factory)
+  king = figure_builder.build_king(engine.Colour.WHITE, engine.Position(3, 3))
+  game.figures = (king,)
+
   app.game_repository.add(game)
 
   for figure in game.figures:
@@ -94,4 +104,4 @@ def client():
   # TODO: app.app.app_context is pretty ugly.
   with app.app.test_client() as client:
     yield client
-  app.clear_repositories()
+  app.reset_data()
