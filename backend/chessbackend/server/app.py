@@ -94,9 +94,7 @@ def make_move(game_id):
         for figure in game.figures:
             figure_repository.update(figure)
         for fig_id in old_figure_ids:
-            print(fig_id)
             if fig_id not in new_figure_ids:
-                print("delete!")
                 figure_repository.delete(fig_id)
         return jsonify({}), 204
     except engine.NoFigureError:

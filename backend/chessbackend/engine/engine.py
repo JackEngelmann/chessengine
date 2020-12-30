@@ -143,16 +143,10 @@ class DiagonalMovement(Movement):
       return False
     
     # Path must be free.
-    print(move.source)
-    print(move.target)
     x_range = _get_exclusive_range(move.source.x, move.target.x)
     y_range = _get_exclusive_range(move.source.y, move.target.y)
-    print(x_range)
-    print(y_range)
     for (x, y) in zip(x_range, y_range):
-      print(x, y)
       if _get_figure_at_position(figures, Position(x, y)) is not None:
-        print('not free!')
         return False
     return True
 
