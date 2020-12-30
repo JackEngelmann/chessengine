@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from chessbackend.infrastructure import entity
 from typing import NamedTuple, Tuple, Optional, Type
 import enum
 import copy
