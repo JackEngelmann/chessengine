@@ -71,3 +71,22 @@ def test_game_in_turn_toggles():
     )
   )
   assert game.in_turn == engine.Colour.WHITE
+
+class TestGameIsCheck:
+  @staticmethod
+  def test_game_is_check():
+    black_rook = figure_builder.build_rook(engine.Colour.BLACK, engine.Position(3, 4))
+    white_king = figure_builder.build_king(engine.Colour.WHITE, engine.Position(4, 4))
+    figures = (white_king, black_rook)
+    game = engine.Game(figures, engine.Colour.WHITE)
+    assert game.is_check()
+
+  @staticmethod
+  def test_game_is_check_false():
+    black_rook = figure_builder.build_rook(engine.Colour.BLACK, engine.Position(3, 3))
+    white_king = figure_builder.build_king(engine.Colour.WHITE, engine.Position(4, 4))
+    figures = (white_king, black_rook)
+    game = engine.Game(figures, engine.Colour.WHITE)
+    assert not game.is_check()
+
+
