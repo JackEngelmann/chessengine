@@ -17,9 +17,7 @@ def clear_repositories():
 
 @app.route('/game', methods=["POST"])
 def create_game():
-    game_builder = engine.GameBuilder()
-    game_builder.add_figure(engine.FigureType.KING, (1, 1), engine.Colour.WHITE)
-    game = game_builder.build()
+    game = engine.build_default_game()
 
     game_repository.add(game)
     for figure in game.figures:

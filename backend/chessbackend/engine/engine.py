@@ -26,6 +26,11 @@ class Figure(ABC, entity.Entity):
   def name(self):
     pass
 
+def get_opposite_color(colour: Colour):
+  if colour == Colour.WHITE:
+    return Colour.BLACK
+  return Colour.WHITE
+
 
 class King(Figure):
   name = "King"
@@ -45,13 +50,49 @@ class NoFigureError(Exception):
 class InvalidMoveError(Exception):
   pass
 
+class Board:
+  def __init__(self, size = (8, 8)):
+    self.size = size
+    self.figures = tuple()
+
+  def get_figure_at_position(self, position: Tuple[int, int]) -> Optional[Figure]:
+    for fig in self.figures:
+      if fig.position == position:
+        return fig
+    return None
+  
+  def is_occupied(self, position: Tuple[int, int]) -> bool:
+    return self.get_figure_at_position(position) is not None
+  
+  def is_occupied_by_opposite_color(self, position: Tuple[int, int], colour: Colour) -> bool:
+    figure = self.get_figure_at_position(position)
+    if figure is None:
+      return False
+    opposite_colour = get_opposite_colour(colour)
+    return figure.colour == opposite_colour
+  
+  def is_occupied_by_same_color(self, position: Tuple[int, int], colour: Colour) -> bool:
+    figure = self.get_figure_at_position(position)
+    if figure is None:
+      return False
+    return figure.colour == colour
+  
+  def make_move(self, from_position: Tuple[int, int], to_position: Tuple[int, int]):
+    # this method assumes the validity of the move was already checked
+    from_figure = self.get_figure_at_position(from_position)
+    from_figure.position = to_position
+
+    to_figure = self.get_figure_at_position(to_position)
+    if to_figure:
+      self.figures.remove(to_figure)
+
 
 class Game(entity.Entity):
   def __init__(self, size = (8, 8), in_turn = Colour.WHITE, id: Optional[int] = None):
     super().__init__(id)
     self.in_turn = in_turn
-    self.figures = tuple()
-    self.size = size
+    # TODO: pass board as argument instead
+    self.board = Board(size)
   
   def is_move_valid(self, figure_to_move: Figure, to_position: Tuple[int, int]) -> bool:
     same_position = figure_to_move.position == to_position
@@ -146,3 +187,12 @@ class GameBuilder:
 
     return game
 
+def build_default_game():
+  game_builder = GameBuilder()
+  game_builder.add_figure(
+    FigureType.KING, (4, 0), Colour.WHITE,
+  )
+  game_builder.add_figure(
+    FigureType.KING, (4, 7), Colour.BLACK,
+  )
+  return game_builder.build()
