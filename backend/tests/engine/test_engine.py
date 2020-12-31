@@ -412,6 +412,7 @@ class TestPawnCaptureMovement:
     moving_figure, *_ = figures_after_move
     assert moving_figure.position == move.target
 
+
 def test_build_default_figures():
   figures = engine.build_default_figures(figure_builder)
   assert isinstance(figures, tuple)

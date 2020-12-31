@@ -107,3 +107,16 @@ class TestGameIsCheckMate:
     figures = (white_king, black_rook)
     game = engine.Game(figures, engine.Colour.WHITE)
     assert not game.is_check_mate()
+
+def test_game_get_all_target_positions_must_resolve_check_situation():
+  black_rook = figure_builder.build_rook(engine.Colour.BLACK, engine.Position(0, 7))
+  white_king = figure_builder.build_king(engine.Colour.WHITE, engine.Position(0, 0))
+  figures = (white_king, black_rook)
+  game = engine.Game(figures, engine.Colour.WHITE)
+
+  assert game.is_check()
+
+  king_target_positions = game.get_all_target_positions(white_king.position)
+  assert engine.Position(1, 0) in king_target_positions
+  assert engine.Position(1, 1) in king_target_positions
+  assert len(king_target_positions) == 2

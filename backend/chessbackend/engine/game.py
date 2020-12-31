@@ -16,6 +16,17 @@ class Game:
     self.in_turn = _get_opposite_color(self.in_turn)
   
   def get_all_target_positions(self, source_position: engine.Position) -> Tuple[engine.Position, ...]:
+    if self.is_check():
+      target_positions_resolving_check = []
+      for target_position in _get_all_target_positions(source_position, self.figures, self.in_turn):
+        new_figures = _make_move(
+          engine.Move(source_position, target_position),
+          self.figures, self.in_turn
+        )
+        if not _is_check(new_figures, self.in_turn):
+          target_positions_resolving_check.append(target_position)
+      return tuple(target_positions_resolving_check)
+      
     return _get_all_target_positions(source_position, self.figures, self.in_turn)
   
   def is_check(self) -> bool:
@@ -66,6 +77,7 @@ def _get_all_target_positions(source_position: engine.Position, figures: Tuple[e
       if _is_move_possible(move, figures, in_turn):
         all_target_positions.append(target_position)
   return tuple(all_target_positions)
+
 
 def _get_all_possible_moves(figures: Tuple[engine.Figure, ...], in_turn: engine.Colour) -> Tuple[engine.Move, ...]:
   possible_moves = []
