@@ -13,7 +13,7 @@ class Game:
   def make_move(self, move: engine.Move):
     new_figures = _make_move(move, self.figures, self.in_turn)
     self.figures = new_figures
-    self.in_turn = _get_opposite_color(self.in_turn)
+    self.in_turn = engine.get_opposite_color(self.in_turn)
   
   def get_all_target_positions(self, source_position: engine.Position) -> Tuple[engine.Position, ...]:
     if self.is_check():
@@ -91,17 +91,9 @@ def _get_all_possible_moves(figures: Tuple[engine.Figure, ...], in_turn: engine.
   return possible_moves
 
 
-# TODO: move
-def _get_opposite_color(colour: engine.Colour):
-  if colour == engine.Colour.WHITE:
-    return engine.Colour.BLACK
-  else:
-    return engine.Colour.WHITE
-
-
 def _is_check(figures: Tuple[engine.Figure, ...], in_turn: engine.Colour):
   king = next(fig for fig in figures if fig.name == 'King' and fig.colour == in_turn)
-  opposite_color = _get_opposite_color(in_turn)
+  opposite_color = engine.get_opposite_color(in_turn)
   for figure in figures:
     if king.position in _get_all_target_positions(figure.position, figures, opposite_color):
       return True

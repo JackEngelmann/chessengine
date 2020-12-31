@@ -11,6 +11,14 @@ class Colour(enum.Enum):
   WHITE = "white"
   BLACK = "black"
 
+
+def get_opposite_color(colour: Colour):
+  if colour == Colour.WHITE:
+    return Colour.BLACK
+  else:
+    return Colour.WHITE
+
+
 class Move(NamedTuple):
   source: Position
   target: Position
