@@ -284,8 +284,11 @@ def get_figure_at_position(
 
 def build_default_figures(figure_builder: FigureBuilder) -> Tuple[Figure, ...]:
     figures = []
+
+    # Add all figures except pawns.
     figures.extend(
         [
+            # Add all black figures except pawns.
             figure_builder.build_rook(Colour.BLACK, Position(0, 7)),
             figure_builder.build_knight(Colour.BLACK, Position(1, 7)),
             figure_builder.build_bishop(Colour.BLACK, Position(2, 7)),
@@ -294,13 +297,7 @@ def build_default_figures(figure_builder: FigureBuilder) -> Tuple[Figure, ...]:
             figure_builder.build_bishop(Colour.BLACK, Position(5, 7)),
             figure_builder.build_knight(Colour.BLACK, Position(6, 7)),
             figure_builder.build_rook(Colour.BLACK, Position(7, 7)),
-        ]
-    )
-    for x in range(BOARD_SIZE):
-        figures.append(figure_builder.build_pawn(Colour.BLACK, Position(x, 6)))
-
-    figures.extend(
-        [
+            # Add a white figures except pawns.
             figure_builder.build_rook(Colour.WHITE, Position(0, 0)),
             figure_builder.build_knight(Colour.WHITE, Position(1, 0)),
             figure_builder.build_bishop(Colour.WHITE, Position(2, 0)),
@@ -311,7 +308,10 @@ def build_default_figures(figure_builder: FigureBuilder) -> Tuple[Figure, ...]:
             figure_builder.build_rook(Colour.WHITE, Position(7, 0)),
         ]
     )
+
+    # Add pawns.
     for x in range(BOARD_SIZE):
+        figures.append(figure_builder.build_pawn(Colour.BLACK, Position(x, 6)))
         figures.append(figure_builder.build_pawn(Colour.WHITE, Position(x, 1)))
     return tuple(figures)
 
