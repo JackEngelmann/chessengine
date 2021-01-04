@@ -41,7 +41,12 @@ class Game:
 
 
 def _is_outside_board(position: engine.Position):
-    return position.x < 0 or position.y < 0 or position.x > 7 or position.y > 7
+    return (
+        position.x < 0
+        or position.y < 0
+        or position.x >= engine.BOARD_SIZE
+        or position.y >= engine.BOARD_SIZE
+    )
 
 
 def _is_move_possible(
