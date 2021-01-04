@@ -83,7 +83,7 @@ class TestGameIsCheck:
 
 class TestGameIsCheckMate:
     @staticmethod
-    def test_game_is_check_mate():
+    def test_game_is_checkmate():
         first_black_rook = figure_builder.build_rook(
             engine.Colour.BLACK, engine.Position(0, 7)
         )
@@ -95,10 +95,10 @@ class TestGameIsCheckMate:
         )
         figures = (white_king, first_black_rook, second_black_rook)
         game = engine.Game(figures, engine.Colour.WHITE)
-        assert game.is_check_mate()
+        assert game.is_checkmate()
 
     @staticmethod
-    def test_game_is_check_but_not_check_mate():
+    def test_game_is_check_but_not_checkmate():
         black_rook = figure_builder.build_rook(
             engine.Colour.BLACK, engine.Position(0, 7)
         )
@@ -107,7 +107,7 @@ class TestGameIsCheckMate:
         )
         figures = (white_king, black_rook)
         game = engine.Game(figures, engine.Colour.WHITE)
-        assert not game.is_check_mate()
+        assert not game.is_checkmate()
 
 
 def test_game_get_all_target_positions_must_resolve_check_situation():
@@ -133,3 +133,47 @@ def test_game_get_all_target_positions_cannot_introduce_check():
     king_target_positions = game.get_all_target_positions(white_king.position)
     assert len(king_target_positions) == 1
     assert engine.Position(0, 1) in king_target_positions
+
+
+class TestGameIsCheckMate:
+    @staticmethod
+    def test_game_no_stalemate_when_figure_can_move():
+        black_rook = figure_builder.build_rook(
+            engine.Colour.BLACK, engine.Position(1, 7)
+        )
+        white_king = figure_builder.build_king(
+            engine.Colour.WHITE, engine.Position(0, 0)
+        )
+        figures = (white_king, black_rook)
+        game = engine.Game(figures, engine.Colour.WHITE)
+        assert not game.is_stalemate()
+
+    @staticmethod
+    def test_game_no_stalemate_when_checkmate():
+        first_black_rook = figure_builder.build_rook(
+            engine.Colour.BLACK, engine.Position(0, 7)
+        )
+        second_black_rook = figure_builder.build_rook(
+            engine.Colour.BLACK, engine.Position(1, 7)
+        )
+        white_king = figure_builder.build_king(
+            engine.Colour.WHITE, engine.Position(0, 0)
+        )
+        figures = (white_king, first_black_rook, second_black_rook)
+        game = engine.Game(figures, engine.Colour.WHITE)
+        assert not game.is_stalemate()
+
+    @staticmethod
+    def test_game_is_stalemate():
+        first_black_rook = figure_builder.build_rook(
+            engine.Colour.BLACK, engine.Position(1, 7)
+        )
+        second_black_rook = figure_builder.build_rook(
+            engine.Colour.BLACK, engine.Position(7, 1)
+        )
+        white_king = figure_builder.build_king(
+            engine.Colour.WHITE, engine.Position(0, 0)
+        )
+        figures = (white_king, first_black_rook, second_black_rook)
+        game = engine.Game(figures, engine.Colour.WHITE)
+        assert game.is_stalemate()

@@ -10,5 +10,6 @@ export type Game = {
   id: number;
   inTurn: string;
   check: boolean;
-  checkMate: boolean;
+  checkmate: boolean;
+  stalemate: boolean;
 };

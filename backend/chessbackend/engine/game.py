@@ -25,8 +25,15 @@ class Game:
     def is_check(self) -> bool:
         return _is_check(self.figures, self.in_turn)
 
-    def is_check_mate(self) -> bool:
+    def is_checkmate(self) -> bool:
         if not self.is_check():
+            return False
+
+        all_possible_moves = _get_all_possible_moves(self.figures, self.in_turn)
+        return len(all_possible_moves) == 0
+
+    def is_stalemate(self) -> bool:
+        if self.is_check():
             return False
 
         all_possible_moves = _get_all_possible_moves(self.figures, self.in_turn)

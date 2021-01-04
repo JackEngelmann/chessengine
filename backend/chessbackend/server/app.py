@@ -42,7 +42,8 @@ def get_game(game_id):
             "id": game.id,
             "inTurn": game.in_turn.value,
             "check": game.is_check(),
-            "checkMate": game.is_check_mate(),
+            "checkmate": game.is_checkmate(),
+            "stalemate": game.is_stalemate(),
         }
     )
 

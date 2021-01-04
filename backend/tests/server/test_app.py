@@ -20,7 +20,8 @@ def test_get_game(client):
     get_data = json.loads(get_response.data)
     assert get_data["inTurn"] == "white"
     assert isinstance(get_data["check"], bool)
-    assert isinstance(get_data["checkMate"], bool)
+    assert isinstance(get_data["checkmate"], bool)
+    assert isinstance(get_data["stalemate"], bool)
 
 
 def test_get_game_figures(client):

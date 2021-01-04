@@ -85,7 +85,9 @@ function App() {
           <br />
           Check: {game.check ? "Yes" : "No"}
           <br />
-          Check-mate: {game.checkMate ? "Yes" : "No"}
+          Checkmate: {game.checkmate ? "Yes" : "No"}
+          <br />
+          Stalemate: {game.stalemate ? "Yes" : "No"}
           <br />
           <Chessboard
             makeMove={makeMove}
