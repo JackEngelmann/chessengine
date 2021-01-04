@@ -83,6 +83,10 @@ function App() {
           <br />
           In turn: {game.inTurn}
           <br />
+          Check: {game.check ? "Yes" : "No"}
+          <br />
+          Check-mate: {game.checkMate ? "Yes" : "No"}
+          <br />
           <Chessboard
             makeMove={makeMove}
             figures={figures}

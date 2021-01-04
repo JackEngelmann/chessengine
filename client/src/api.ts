@@ -9,4 +9,6 @@ export type Figure = {
 export type Game = {
   id: number;
   inTurn: string;
+  check: boolean;
+  checkMate: boolean;
 };
