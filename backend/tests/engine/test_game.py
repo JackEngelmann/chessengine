@@ -120,3 +120,13 @@ def test_game_get_all_target_positions_must_resolve_check_situation():
   assert engine.Position(1, 0) in king_target_positions
   assert engine.Position(1, 1) in king_target_positions
   assert len(king_target_positions) == 2
+
+def test_game_get_all_target_positions_cannot_introduce_check():
+  black_rook = figure_builder.build_rook(engine.Colour.BLACK, engine.Position(1, 7))
+  white_king = figure_builder.build_king(engine.Colour.WHITE, engine.Position(0, 0))
+  figures = (white_king, black_rook)
+  game = engine.Game(figures, engine.Colour.WHITE)
+
+  king_target_positions = game.get_all_target_positions(white_king.position)
+  assert len(king_target_positions) == 1
+  assert engine.Position(0, 1) in king_target_positions

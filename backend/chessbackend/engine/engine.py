@@ -12,6 +12,9 @@ class Colour(enum.Enum):
   BLACK = "black"
 
 
+BOARD_SIZE = 8
+
+
 def get_opposite_color(colour: Colour):
   if colour == Colour.WHITE:
     return Colour.BLACK
@@ -273,7 +276,7 @@ def build_default_figures(figure_builder: FigureBuilder) -> Tuple[Figure, ...]:
     figure_builder.build_knight(Colour.BLACK, Position(6, 7)),
     figure_builder.build_rook(Colour.BLACK, Position(7, 7)),
   ])
-  for x in range(8):
+  for x in range(BOARD_SIZE):
     figures.append(
       figure_builder.build_pawn(Colour.BLACK, Position(x, 6))
     )
@@ -288,7 +291,7 @@ def build_default_figures(figure_builder: FigureBuilder) -> Tuple[Figure, ...]:
     figure_builder.build_knight(Colour.WHITE, Position(6, 0)),
     figure_builder.build_rook(Colour.WHITE, Position(7, 0)),
   ])
-  for x in range(8):
+  for x in range(BOARD_SIZE):
     figures.append(
       figure_builder.build_pawn(Colour.WHITE, Position(x, 1))
     )
