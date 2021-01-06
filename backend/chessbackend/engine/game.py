@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 from chessbackend.engine import engine
 
 
@@ -113,17 +113,22 @@ def _get_all_possible_moves(
 
 
 def _is_check(figures: Tuple[engine.Figure, ...], in_turn: engine.Colour):
-    king = next(
-        (fig for fig in figures if fig.name == "King" and fig.colour == in_turn), None
-    )
+    king = _find_king(figures, in_turn)
 
     # Only for test cases. In practice, both kings must always exist.
     if king is None:
         return False
 
-    opposite_color = engine.get_opposite_color(in_turn)
     for figure in figures:
         move_to_beat_king = engine.Move(figure.position, king.position)
         if figure.is_move_possible(move_to_beat_king, figures):
             return True
     return False
+
+
+def _find_king(
+    figures: Tuple[engine.Figure, ...], colour: engine.Colour
+) -> Optional[engine.Figure]:
+    return next(
+        (fig for fig in figures if fig.name == "King" and fig.colour == colour), None
+    )
