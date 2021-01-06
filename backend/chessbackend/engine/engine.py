@@ -229,6 +229,24 @@ class Figure:
         assert possible_movement is not None
         return possible_movement.execute_move(move, figures)
 
+    def get_all_possible_moves(self, figures: Tuple["Figure", ...]) -> Tuple[Move, ...]:
+        # Brute force approach trying if moving to every field is possible,
+        # could technically be optimized.
+
+        possible_moves = []
+
+        for x in range(BOARD_SIZE):
+            for y in range(BOARD_SIZE):
+                target_position = Position(x, y)
+                move = Move(self.position, target_position)
+                if self.is_move_possible(move, figures):
+                    possible_moves.append(move)
+
+        return tuple(possible_moves)
+
+    def can_do_some_move(self, figures: Tuple["Figure", ...]) -> bool:
+        return len(self.get_all_possible_moves(figures)) > 0
+
     def __copy__(self):
         return Figure(self.colour, self.position, self._movements, self.name)
 

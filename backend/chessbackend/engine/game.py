@@ -29,8 +29,11 @@ class Game:
         if not self.is_check():
             return False
 
-        all_possible_moves = _get_all_possible_moves(self.figures, self.in_turn)
-        return len(all_possible_moves) == 0
+        return all(
+            not fig.can_do_some_move(self.figures)
+            for fig in self.figures
+            if fig.colour == self.in_turn
+        )
 
     def is_stalemate(self) -> bool:
         if self.is_check():
@@ -73,36 +76,25 @@ def _make_move(
     return new_figures
 
 
-def _get_all_target_positions(
-    source_position: engine.Position,
-    figures: Tuple[engine.Figure, ...],
-    in_turn: engine.Colour,
-) -> Tuple[engine.Position, ...]:
-    all_target_positions = []
-    for x in range(engine.BOARD_SIZE):
-        for y in range(engine.BOARD_SIZE):
-            target_position = engine.Position(x, y)
-            move = engine.Move(source_position, target_position)
-            if _is_move_possible(move, figures, in_turn):
-                all_target_positions.append(target_position)
-    return tuple(all_target_positions)
-
-
 # TODO: rename _get_all_taget_positions, _get_possible_target_positions
 def _get_possible_target_positions(
     source_position: engine.Position,
     figures: Tuple[engine.Figure, ...],
     in_turn: engine.Colour,
 ):
-    all_target_positions = _get_all_target_positions(source_position, figures, in_turn)
+    figure = engine.get_figure_at_position(figures, source_position)
 
+    if figure.colour != in_turn:
+        return tuple()
+
+    all_possible_moves = figure.get_all_possible_moves(figures)
     possible_positions = []
-    for target_position in all_target_positions:
-        move = engine.Move(source_position, target_position)
+
+    for move in all_possible_moves:
         new_figures = _make_move(move, figures, in_turn)
         # After the move, the player in turn shouldn't be in check (anymore).
         if not _is_check(new_figures, in_turn):
-            possible_positions.append(target_position)
+            possible_positions.append(move.target)
 
     return tuple(possible_positions)
 
@@ -131,8 +123,7 @@ def _is_check(figures: Tuple[engine.Figure, ...], in_turn: engine.Colour):
 
     opposite_color = engine.get_opposite_color(in_turn)
     for figure in figures:
-        if king.position in _get_all_target_positions(
-            figure.position, figures, opposite_color
-        ):
+        move_to_beat_king = engine.Move(figure.position, king.position)
+        if figure.is_move_possible(move_to_beat_king, figures):
             return True
     return False
