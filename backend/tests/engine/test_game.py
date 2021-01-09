@@ -1,3 +1,4 @@
+import pytest
 from chessbackend import engine
 
 
@@ -177,3 +178,13 @@ class TestGameIsCheckMate:
         figures = (white_king, first_black_rook, second_black_rook)
         game = engine.Game(figures, engine.Colour.WHITE)
         assert game.is_stalemate()
+
+
+def test_make_move_raises_error_on_invalid_move():
+    white_pawn = figure_builder.build_rook(engine.Colour.WHITE, engine.Position(0, 1))
+    figures = (white_pawn,)
+    invalid_move = engine.Move(white_pawn.position, engine.Position(0, 2))
+    game = engine.Game(figures, engine.Colour.BLACK)
+    assert not game.is_move_possible(invalid_move)
+    with pytest.raises(ValueError):
+        game.make_move(invalid_move)
